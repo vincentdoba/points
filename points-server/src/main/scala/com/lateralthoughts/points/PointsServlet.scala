@@ -1,9 +1,8 @@
 package com.lateralthoughts.points
 
-import org.scalatra._
-import scalate.ScalateSupport
+import com.lateralthoughts.points.endpoints.RewardingActionServlet
 
-class PointsServlet extends PointsStack {
+class PointsServlet extends PointsStack with RewardingActionServlet {
 
   get("/") {
     "coucou"
