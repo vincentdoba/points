@@ -1,6 +1,6 @@
 package com.lateralthoughts.points.model
 
-import java.time.OffsetDateTime
+import java.time.{Clock, OffsetDateTime}
 import java.util.UUID
 
 /**
@@ -15,27 +15,61 @@ import java.util.UUID
  * @param createdAt the date of the creation of the action, in UTC timezone
  * @param updatedAt the date of the last update of the action, in UTC timezone
  */
-case class RewardingAction(id:UUID,
-                           name:String,
-                           category:RewardingActionCategory,
-                           description:String,
-                           points:Int,
-                           createdAt:OffsetDateTime,
-                           updatedAt:OffsetDateTime) {
+case class RewardingAction(id: UUID,
+                           name: String,
+                           category: RewardingActionCategory,
+                           description: String,
+                           points: Int,
+                           createdAt: OffsetDateTime,
+                           updatedAt: OffsetDateTime) {
 
 }
 
-/**
- * The category of rewarding action, for instance management, accountancy, public relation...
- *
- * @param id the id of the action, used in database
- * @param name the name of the category, for instance "accountancy"
- * @param description a description of the category, for instance "everything that implies accountancy : answer to the accountant..."
- * @param createdAt the date of the creation of the category, in UTC timezone
- * @param updatedAt the date of the last update of the category, in UTC timezone
- */
-case class RewardingActionCategory(id:UUID,
-                                   name:String,
-                                   description:String,
-                                   createdAt:OffsetDateTime,
-                                   updatedAt:OffsetDateTime)
+case class RewardingActionInput(id: Option[UUID], name: Option[String], category: Option[RewardingActionCategory], description: Option[String], points: Option[Int]) {
+
+  def generateRewardingAction: Either[List[String], RewardingAction] = {
+    val missingFields = List(
+      retrieveFieldNameIfNotSet(this.name, "name"),
+      retrieveFieldNameIfNotSet(this.category, "category"),
+      retrieveFieldNameIfNotSet(this.description, "description"),
+      retrieveFieldNameIfNotSet(this.points, "points")
+    ).flatten
+
+    if (missingFields.isEmpty) {
+      val id = UUID.randomUUID()
+      val name = this.name.get
+      val category = this.category.get
+      val description = this.description.get
+      val points = this.points.get
+      val createdAt = OffsetDateTime.now(Clock.systemUTC())
+      val updatedAt = OffsetDateTime.now(Clock.systemUTC())
+      Right(RewardingAction(id, name, category, description, points, createdAt, updatedAt))
+    } else {
+      Left(missingFields)
+    }
+
+  }
+
+  private def retrieveFieldNameIfNotSet[T](field: Option[T], fieldName: String): Option[String] = {
+    field match {
+      case None => Some(fieldName)
+      case Some(_) => None
+    }
+  }
+
+  def update(rewardingAction: RewardingAction) = {
+    val id = rewardingAction.id
+    val name = pick(this.name, rewardingAction.name)
+    val category = pick(this.category, rewardingAction.category)
+    val description = pick(this.description, rewardingAction.description)
+    val points = pick(this.points, rewardingAction.points)
+    val createdAt = rewardingAction.createdAt
+    val updatedAt = OffsetDateTime.now(Clock.systemUTC())
+    RewardingAction(id, name, category, description, points, createdAt, updatedAt)
+  }
+
+  private def pick[T](candidate: Option[T], current: T) = candidate match {
+    case None => current
+    case Some(inputCandidate) => inputCandidate
+  }
+}
