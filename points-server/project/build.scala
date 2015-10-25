@@ -29,7 +29,8 @@ object PointsBuild extends Build {
         "ch.qos.logback" % "logback-classic" % "1.1.2" % "runtime",
         "org.eclipse.jetty" % "jetty-webapp" % "9.2.10.v20150310" % "container",
         "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
-        "org.json4s"   %% "json4s-jackson" % "3.3.0"
+        "org.json4s"   %% "json4s-jackson" % "3.3.0",
+        "org.json4s" %% "json4s-ext" % "3.3.0"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(
