@@ -18,9 +18,10 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
     }
   }
 
-  test("should save rewarding action") {
+  test("should return bad request when body is empty") {
     post("/action/") {
-      status should equal(200)
+      status should equal (400)
+      body should equal ("The request body is not a valid JSON object")
     }
   }
 
