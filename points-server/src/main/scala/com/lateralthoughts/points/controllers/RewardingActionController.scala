@@ -6,7 +6,7 @@ import java.util.UUID
 import com.lateralthoughts.points.model.{RewardingAction, RewardingActionCategory, RewardingActionInput}
 import com.lateralthoughts.points.repositories.RewardingActionRepository
 import org.json4s.jackson.JsonMethods
-import org.scalatra.{InternalServerError, BadRequest, Ok}
+import org.scalatra._
 
 import scala.util.{Failure, Success}
 
@@ -26,19 +26,19 @@ trait RewardingActionController extends HandlingJson {
         case None => BadRequest("The request body is not a JSON object representing a Rewarding Action")
         case Some(input) => input.id.flatMap(RewardingActionRepository.retrieve).map(input.update) match {
           case None => input.generateRewardingAction match {
-            case Left(fields) => BadRequest("The following fields weren't filled in the request : " + fields.reduce((a, b) => a + ", " + b))
-            case Right(rewarding) => save(rewarding)
+            case Left(message) => BadRequest(message)
+            case Right(rewarding) => save(rewarding, Created.apply)
           }
-          case Some(rewarding) => save(rewarding)
+          case Some(rewarding) => save(rewarding, Ok.apply)
         }
       }
     }
 
   }
 
-  private def save(rewarding: RewardingAction) = {
+  private def save(rewarding: RewardingAction, successStatus: (Any, Map[String, String], String) => ActionResult): Any = {
     RewardingActionRepository.save(rewarding) match {
-      case Success(savedRewarding) => Ok(savedRewarding)
+      case Success(savedRewarding) => successStatus(savedRewarding, Map.empty, "")
       case Failure(exception) => InternalServerError(exception.getMessage)
     }
   }

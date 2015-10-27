@@ -25,9 +25,9 @@ case class RewardingAction(id: UUID,
 
 }
 
-case class RewardingActionInput(id: Option[UUID], name: Option[String], category: Option[RewardingActionCategory], description: Option[String], points: Option[Int]) {
+case class RewardingActionInput(id: Option[UUID], name: Option[String], category: Option[RewardingActionCategoryInput], description: Option[String], points: Option[Int]) extends Input {
 
-  def generateRewardingAction: Either[List[String], RewardingAction] = {
+  def generateRewardingAction: Either[String, RewardingAction] = {
     val missingFields = List(
       retrieveFieldNameIfNotSet(this.name, "name"),
       retrieveFieldNameIfNotSet(this.category, "category"),
@@ -43,24 +43,20 @@ case class RewardingActionInput(id: Option[UUID], name: Option[String], category
       val points = this.points.get
       val createdAt = OffsetDateTime.now(Clock.systemUTC())
       val updatedAt = OffsetDateTime.now(Clock.systemUTC())
-      Right(RewardingAction(id, name, category, description, points, createdAt, updatedAt))
+      category.generateRewardingAction match {
+        case Right(retrievedCategory) => Right(RewardingAction(id, name, retrievedCategory, description, points, createdAt, updatedAt))
+        case Left(message) => Left("Category in RewardingAction is not a valid category, " + message)
+      }
     } else {
-      Left(missingFields)
+      Left(generateMissingFieldsErrorMessage(missingFields))
     }
 
-  }
-
-  private def retrieveFieldNameIfNotSet[T](field: Option[T], fieldName: String): Option[String] = {
-    field match {
-      case None => Some(fieldName)
-      case Some(_) => None
-    }
   }
 
   def update(rewardingAction: RewardingAction) = {
     val id = rewardingAction.id
     val name = pick(this.name, rewardingAction.name)
-    val category = pick(this.category, rewardingAction.category)
+    val category = rewardingAction.category
     val description = pick(this.description, rewardingAction.description)
     val points = pick(this.points, rewardingAction.points)
     val createdAt = rewardingAction.createdAt
@@ -68,8 +64,4 @@ case class RewardingActionInput(id: Option[UUID], name: Option[String], category
     RewardingAction(id, name, category, description, points, createdAt, updatedAt)
   }
 
-  private def pick[T](candidate: Option[T], current: T) = candidate match {
-    case None => current
-    case Some(inputCandidate) => inputCandidate
-  }
 }

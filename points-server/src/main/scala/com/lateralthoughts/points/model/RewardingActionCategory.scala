@@ -1,6 +1,6 @@
 package com.lateralthoughts.points.model
 
-import java.time.OffsetDateTime
+import java.time.{Clock, OffsetDateTime}
 import java.util.UUID
 
 /**
@@ -17,3 +17,28 @@ case class RewardingActionCategory(id: UUID,
                                    description: String,
                                    createdAt: OffsetDateTime,
                                    updatedAt: OffsetDateTime)
+
+case class RewardingActionCategoryInput(id: Option[UUID],
+                                        name: Option[String],
+                                        description: Option[String]) extends Input {
+
+  def generateRewardingAction = {
+
+    val missingFields = List(
+      retrieveFieldNameIfNotSet(this.name, "name"),
+      retrieveFieldNameIfNotSet(this.description, "description")
+    ).flatten
+
+    if (missingFields.isEmpty) {
+      val id = UUID.randomUUID()
+      val name = this.name.get
+      val description = this.description.get
+      val createdAt = OffsetDateTime.now(Clock.systemUTC())
+      val updatedAt = OffsetDateTime.now(Clock.systemUTC())
+      Right(RewardingActionCategory(id, name, description, createdAt, updatedAt))
+    } else {
+      Left(generateMissingFieldsErrorMessage(missingFields))
+    }
+  }
+
+}

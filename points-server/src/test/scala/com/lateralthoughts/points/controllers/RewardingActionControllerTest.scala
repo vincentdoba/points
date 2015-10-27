@@ -25,4 +25,32 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
     }
   }
 
+  test("should return bad request when body is not a rewarding action input") {
+    val json = "{}"
+
+    post("/action/", json.toCharArray.map(_.toByte)) {
+      status should equal (400)
+      body should equal ("The following fields weren't correctly filled in the request : name, category, description, points")
+    }
+  }
+
+  test("should return created when a rewarding action is created") {
+    val json =
+      """
+        {
+          "name":"myAction",
+          "category": {
+            "name":"myCategory",
+            "description":"Description of my category"
+          },
+          "description":"Description of my action",
+          "points":1
+        }
+      """.stripMargin
+
+    post("/action/", json.toCharArray.map(_.toByte)) {
+      status should equal (201)
+    }
+  }
+
 }
