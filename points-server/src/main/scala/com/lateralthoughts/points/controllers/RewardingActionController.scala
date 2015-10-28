@@ -5,7 +5,6 @@ import java.util.UUID
 
 import com.lateralthoughts.points.model.{RewardingAction, RewardingActionCategory, RewardingActionInput}
 import com.lateralthoughts.points.repositories.RewardingActionRepository
-import org.json4s.jackson.JsonMethods
 import org.scalatra._
 
 import scala.util.{Failure, Success}

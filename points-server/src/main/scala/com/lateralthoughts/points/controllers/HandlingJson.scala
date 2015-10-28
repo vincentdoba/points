@@ -1,7 +1,6 @@
 package com.lateralthoughts.points.controllers
 
-import com.lateralthoughts.points.model.{RewardingActionInput, JsonFormatter}
-import com.lateralthoughts.points.repositories.RewardingActionRepository
+import com.lateralthoughts.points.model.JsonFormatter
 import org.json4s.jackson.JsonMethods
 import org.scalatra._
 import org.scalatra.json.JacksonJsonSupport
