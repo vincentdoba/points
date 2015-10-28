@@ -21,19 +21,17 @@ trait RewardingActionController extends HandlingJson[RewardingActionInput] {
   }
 
   post("/action/") {
+    retrievePostedJsonAnd(saveRewardingAction)(request)
+  }
 
-    def saveRewardingAction(input:RewardingActionInput) = {
-      input.id.flatMap(RewardingActionRepository.retrieve).map(input.update) match {
-        case None => input.generate match {
-          case Left(message) => BadRequest(message)
-          case Right(rewarding) => save(rewarding, Created.apply)
-        }
-        case Some(rewarding) => save(rewarding, Ok.apply)
+  def saveRewardingAction(input:RewardingActionInput) = {
+    input.id.flatMap(RewardingActionRepository.retrieve).map(input.update) match {
+      case None => input.generate match {
+        case Left(message) => BadRequest(message)
+        case Right(rewarding) => save(rewarding, Created.apply)
       }
+      case Some(rewarding) => save(rewarding, Ok.apply)
     }
-
-    retrieveJson(saveRewardingAction)(request)
-
   }
 
   private def save(rewarding: RewardingAction, successStatus: (Any, Map[String, String], String) => ActionResult): ActionResult = {

@@ -18,7 +18,7 @@ trait HandlingJson[T] extends ScalatraServlet with JsonFormatter with JacksonJso
     contentType = formats("json")
   }
 
-  def retrieveJson(f: T => ActionResult)(request: RichRequest)(implicit m: Manifest[T]) = {
+  def retrievePostedJsonAnd(f: T => ActionResult)(request: RichRequest)(implicit m: Manifest[T]) = {
     JsonMethods.parseOpt(request.body) match {
       case None => BadRequest("The request body is not a valid JSON object")
       case Some(json) => json.extractOpt[T] match {
