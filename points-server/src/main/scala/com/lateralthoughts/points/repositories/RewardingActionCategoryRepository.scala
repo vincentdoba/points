@@ -1,0 +1,5 @@
+package com.lateralthoughts.points.repositories
+
+import com.lateralthoughts.points.model.RewardingActionCategory
+
+object RewardingActionCategoryRepository extends Repository[RewardingActionCategory]

@@ -1,5 +1,7 @@
 package com.lateralthoughts.points.controllers
 
-trait RewardingActionCategoryController extends HandlingJson {
+import com.lateralthoughts.points.model.RewardingActionCategoryInput
+
+trait RewardingActionCategoryController extends HandlingJson[RewardingActionCategoryInput] {
 
 }

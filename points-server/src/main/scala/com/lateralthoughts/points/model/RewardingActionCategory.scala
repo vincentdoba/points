@@ -20,9 +20,9 @@ case class RewardingActionCategory(id: UUID,
 
 case class RewardingActionCategoryInput(id: Option[UUID],
                                         name: Option[String],
-                                        description: Option[String]) extends Input {
+                                        description: Option[String]) extends Input[RewardingActionCategory] {
 
-  def generateRewardingAction = {
+  override def generate = {
 
     val missingFields = List(
       retrieveFieldNameIfNotSet(this.name, "name"),
@@ -39,6 +39,15 @@ case class RewardingActionCategoryInput(id: Option[UUID],
     } else {
       Left(generateMissingFieldsErrorMessage(missingFields))
     }
+  }
+
+  override def update(base:RewardingActionCategory) = {
+    val id = base.id
+    val name = pick(this.name, base.name)
+    val description = pick(this.description, base.description)
+    val createdAt = base.createdAt
+    val updatedAt = OffsetDateTime.now(Clock.systemUTC())
+    RewardingActionCategory(id, name, description, createdAt, updatedAt)
   }
 
 }

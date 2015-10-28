@@ -10,7 +10,9 @@ import org.scalatra._
 
 import scala.util.{Failure, Success}
 
-trait RewardingActionController extends HandlingJson {
+trait RewardingActionController extends HandlingJson[RewardingActionInput] {
+
+  override def typeName = "RewardingAction"
 
   get("/action/") {
     val now = OffsetDateTime.now()
@@ -20,23 +22,21 @@ trait RewardingActionController extends HandlingJson {
 
   post("/action/") {
 
-    JsonMethods.parseOpt(request.body) match {
-      case None => BadRequest("The request body is not a valid JSON object")
-      case Some(json) => json.extractOpt[RewardingActionInput] match {
-        case None => BadRequest("The request body is not a JSON object representing a Rewarding Action")
-        case Some(input) => input.id.flatMap(RewardingActionRepository.retrieve).map(input.update) match {
-          case None => input.generateRewardingAction match {
-            case Left(message) => BadRequest(message)
-            case Right(rewarding) => save(rewarding, Created.apply)
-          }
-          case Some(rewarding) => save(rewarding, Ok.apply)
+    def saveRewardingAction(input:RewardingActionInput) = {
+      input.id.flatMap(RewardingActionRepository.retrieve).map(input.update) match {
+        case None => input.generate match {
+          case Left(message) => BadRequest(message)
+          case Right(rewarding) => save(rewarding, Created.apply)
         }
+        case Some(rewarding) => save(rewarding, Ok.apply)
       }
     }
 
+    retrieveJson(saveRewardingAction)(request)
+
   }
 
-  private def save(rewarding: RewardingAction, successStatus: (Any, Map[String, String], String) => ActionResult): Any = {
+  private def save(rewarding: RewardingAction, successStatus: (Any, Map[String, String], String) => ActionResult): ActionResult = {
     RewardingActionRepository.save(rewarding) match {
       case Success(savedRewarding) => successStatus(savedRewarding, Map.empty, "")
       case Failure(exception) => InternalServerError(exception.getMessage)

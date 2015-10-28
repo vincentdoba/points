@@ -25,9 +25,13 @@ case class RewardingAction(id: UUID,
 
 }
 
-case class RewardingActionInput(id: Option[UUID], name: Option[String], category: Option[RewardingActionCategoryInput], description: Option[String], points: Option[Int]) extends Input {
+case class RewardingActionInput(id: Option[UUID],
+                                name: Option[String],
+                                category: Option[RewardingActionCategoryInput],
+                                description: Option[String],
+                                points: Option[Int]) extends Input[RewardingAction] {
 
-  def generateRewardingAction: Either[String, RewardingAction] = {
+  override def generate: Either[String, RewardingAction] = {
     val missingFields = List(
       retrieveFieldNameIfNotSet(this.name, "name"),
       retrieveFieldNameIfNotSet(this.category, "category"),
@@ -43,7 +47,7 @@ case class RewardingActionInput(id: Option[UUID], name: Option[String], category
       val points = this.points.get
       val createdAt = OffsetDateTime.now(Clock.systemUTC())
       val updatedAt = OffsetDateTime.now(Clock.systemUTC())
-      category.generateRewardingAction match {
+      category.generate match {
         case Right(retrievedCategory) => Right(RewardingAction(id, name, retrievedCategory, description, points, createdAt, updatedAt))
         case Left(message) => Left("Category in RewardingAction is not a valid category, " + message)
       }
@@ -53,7 +57,7 @@ case class RewardingActionInput(id: Option[UUID], name: Option[String], category
 
   }
 
-  def update(rewardingAction: RewardingAction) = {
+  override def update(rewardingAction: RewardingAction) = {
     val id = rewardingAction.id
     val name = pick(this.name, rewardingAction.name)
     val category = rewardingAction.category
