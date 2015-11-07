@@ -21,7 +21,7 @@ case class RewardingAction(id: UUID,
                            description: String,
                            points: Int,
                            createdAt: OffsetDateTime,
-                           updatedAt: OffsetDateTime) {
+                           updatedAt: OffsetDateTime) extends Record {
 
 }
 
@@ -64,8 +64,8 @@ case class RewardingActionInput(id: Option[UUID],
     val description = pick(this.description, rewardingAction.description)
     val points = pick(this.points, rewardingAction.points)
     val createdAt = rewardingAction.createdAt
-    val updatedAt = OffsetDateTime.now(Clock.systemUTC())
-    RewardingAction(id, name, category, description, points, createdAt, updatedAt)
+    val updatedAt = updateDate(rewardingAction, Seq(name, description, points))
+    RewardingAction(id, name.field, category, description.field, points.field, createdAt, updatedAt)
   }
 
 }

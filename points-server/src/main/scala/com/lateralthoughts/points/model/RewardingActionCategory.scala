@@ -16,7 +16,7 @@ case class RewardingActionCategory(id: UUID,
                                    name: String,
                                    description: String,
                                    createdAt: OffsetDateTime,
-                                   updatedAt: OffsetDateTime)
+                                   updatedAt: OffsetDateTime) extends Record
 
 case class RewardingActionCategoryInput(id: Option[UUID],
                                         name: Option[String],
@@ -47,7 +47,7 @@ case class RewardingActionCategoryInput(id: Option[UUID],
     val description = pick(this.description, base.description)
     val createdAt = base.createdAt
     val updatedAt = OffsetDateTime.now(Clock.systemUTC())
-    RewardingActionCategory(id, name, description, createdAt, updatedAt)
+    RewardingActionCategory(id, name.field, description.field, createdAt, updatedAt)
   }
 
 }
