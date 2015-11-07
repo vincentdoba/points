@@ -8,7 +8,7 @@ import com.lateralthoughts.points.model.records.{RewardingAction, RewardingActio
 import com.lateralthoughts.points.repositories.{RewardingActionCategoryRepository, RewardingActionRepository}
 import org.scalatra._
 
-import scala.util.{Failure, Success}
+import scala.util.{Try, Failure, Success}
 
 trait RewardingActionController extends HandlingJson {
 
@@ -23,7 +23,12 @@ trait RewardingActionController extends HandlingJson {
   }
 
   put("/actions/:actionId") {
-    retrievePostedJsonAnd(updateRewardingAction, "rewardingAction")(request)
+    Try {
+      UUID.fromString(params("actionId"))
+    } match {
+      case Success(actionId) => retrievePostedJsonAnd(updateRewardingAction(actionId), "rewardingAction")(request)
+      case Failure(e) => BadRequest(e.getMessage)
+    }
   }
 
   def saveRewardingAction(input: NewRewardingActionInput) = {
@@ -33,7 +38,7 @@ trait RewardingActionController extends HandlingJson {
     }
   }
 
-  def updateRewardingAction(input: UpdateRewardingActionInput) = {
+  def updateRewardingAction(actionId: UUID)(input: UpdateRewardingActionInput) = {
     NotImplemented("Not yet implemented")
   }
 
@@ -44,7 +49,7 @@ trait RewardingActionController extends HandlingJson {
     }
   }
 
-  private def retrieveCategory(rewardingActionInput: RewardingActionInput, rewardingAction: Option[RewardingAction] = None):Either[ActionResult, RewardingActionCategory] = rewardingActionInput match {
+  private def retrieveCategory(rewardingActionInput: RewardingActionInput, rewardingAction: Option[RewardingAction] = None): Either[ActionResult, RewardingActionCategory] = rewardingActionInput match {
     case NewRewardingActionInput(_, category, _, _) => retrieveCategoryFromInput(category)
     case UpdateRewardingActionInput(_, optionalCategory, _, _) => optionalCategory match {
       case None => Right(rewardingAction.map(_.category).get) // Should never be None at this level
