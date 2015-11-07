@@ -1,11 +1,12 @@
-package com.lateralthoughts.points.model
+package com.lateralthoughts.points.model.inputs
 
 import java.time.{Clock, OffsetDateTime}
 import java.util.UUID
 
-import org.scalatest.{Matchers, FlatSpec}
+import com.lateralthoughts.points.model.records.{RewardingAction, RewardingActionCategory}
+import org.scalatest.{FlatSpec, Matchers}
 
-class RewardingActionInputTest extends FlatSpec with Matchers {
+class UpdateRewardingActionInputTest extends FlatSpec with Matchers {
 
   val rewardingActionCategoryId = "C56A4180-65AA-42EC-A945-5FD21DEC0538"
 
@@ -19,7 +20,7 @@ class RewardingActionInputTest extends FlatSpec with Matchers {
 
   it should "update rewarding action with new input elements" in {
     // Given
-    val rewardingActionInput = RewardingActionInput(None, Some("newName"), None, Some("newDescription"), Some(3))
+    val rewardingActionInput = UpdateRewardingActionInput(Some("newName"), None, Some("newDescription"), Some(3))
 
 
     // When
@@ -38,7 +39,7 @@ class RewardingActionInputTest extends FlatSpec with Matchers {
 
   it should "not change rewarding action when input elements are the same than the one saved" in {
     // Given
-    val rewardingActionInput = RewardingActionInput(None, Some("name"), None, Some("description"), Some(2))
+    val rewardingActionInput = UpdateRewardingActionInput(Some("name"), None, Some("description"), Some(2))
 
     // When
     val updatedRewardingAction = rewardingActionInput.update(rewardingAction)
@@ -56,7 +57,7 @@ class RewardingActionInputTest extends FlatSpec with Matchers {
 
   it should "not change rewarding action when there are no new input elements" in {
     // Given
-    val rewardingActionInput = RewardingActionInput(None, None, None, None, None)
+    val rewardingActionInput = UpdateRewardingActionInput(None, None, None, None)
 
     // When
     val updatedRewardingAction = rewardingActionInput.update(rewardingAction)

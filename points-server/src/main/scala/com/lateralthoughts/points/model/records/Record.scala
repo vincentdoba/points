@@ -1,4 +1,4 @@
-package com.lateralthoughts.points.model
+package com.lateralthoughts.points.model.records
 
 import java.time.OffsetDateTime
 import java.util.UUID

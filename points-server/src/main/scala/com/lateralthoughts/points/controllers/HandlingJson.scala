@@ -9,19 +9,17 @@ import org.scalatra.servlet.RichRequest
 /**
  * Trait you need to extend if your endpoints are using JSON format for input/output
  */
-trait HandlingJson[T] extends ScalatraServlet with JsonFormatter with JacksonJsonSupport {
-
-  def typeName:String
+trait HandlingJson extends ScalatraServlet with JsonFormatter with JacksonJsonSupport {
 
   before() {
     contentType = formats("json")
   }
 
-  def retrievePostedJsonAnd(f: T => ActionResult)(request: RichRequest)(implicit m: Manifest[T]) = {
+  def retrievePostedJsonAnd[T](f: T => ActionResult, objectName:String)(request: RichRequest)(implicit manifest: Manifest[T]) = {
     JsonMethods.parseOpt(request.body) match {
       case None => BadRequest("The request body is not a valid JSON object")
       case Some(json) => json.extractOpt[T] match {
-        case None => BadRequest(s"The request body is not a JSON object representing $typeName")
+        case None => BadRequest(s"The request body is not a JSON object representing $objectName")
         case Some(input) => f(input)
       }
     }

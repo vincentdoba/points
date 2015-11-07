@@ -3,40 +3,65 @@ package com.lateralthoughts.points.controllers
 import java.time.OffsetDateTime
 import java.util.UUID
 
-import com.lateralthoughts.points.model.{RewardingAction, RewardingActionCategory, RewardingActionInput}
-import com.lateralthoughts.points.repositories.RewardingActionRepository
+import com.lateralthoughts.points.model.inputs.{InnerRewardingActionCategoryInput, UpdateRewardingActionInput, RewardingActionInput, NewRewardingActionInput}
+import com.lateralthoughts.points.model.records.{RewardingAction, RewardingActionCategory}
+import com.lateralthoughts.points.repositories.{RewardingActionCategoryRepository, RewardingActionRepository}
 import org.scalatra._
 
 import scala.util.{Failure, Success}
 
-trait RewardingActionController extends HandlingJson[RewardingActionInput] {
+trait RewardingActionController extends HandlingJson {
 
-  override def typeName = "RewardingAction"
-
-  get("/action/") {
+  get("/actions/") {
     val now = OffsetDateTime.now()
     val rewardingActionCategory = RewardingActionCategory(UUID.randomUUID(), "myCategory", "my category description", now, now)
     List(RewardingAction(UUID.randomUUID(), "myAction", rewardingActionCategory, "my action description", 1, now, now))
   }
 
-  post("/action/") {
-    retrievePostedJsonAnd(saveRewardingAction)(request)
+  post("/actions/") {
+    retrievePostedJsonAnd(saveRewardingAction, "rewardingAction")(request)
   }
 
-  def saveRewardingAction(input:RewardingActionInput) = {
-    input.id.flatMap(RewardingActionRepository.retrieve).map(input.update) match {
-      case None => input.generate match {
-        case Left(message) => BadRequest(message)
-        case Right(rewarding) => save(rewarding, Created.apply)
-      }
-      case Some(rewarding) => save(rewarding, Ok.apply)
+  put("/actions/:actionId") {
+    retrievePostedJsonAnd(updateRewardingAction, "rewardingAction")(request)
+  }
+
+  def saveRewardingAction(input: NewRewardingActionInput) = {
+    retrieveCategory(input) match {
+      case Left(x) => x
+      case Right(rewardingActionCategory) => save(input.generate(rewardingActionCategory), Created.apply)
     }
+  }
+
+  def updateRewardingAction(input: UpdateRewardingActionInput) = {
+    NotImplemented("Not yet implemented")
   }
 
   private def save(rewarding: RewardingAction, successStatus: (Any, Map[String, String], String) => ActionResult): ActionResult = {
     RewardingActionRepository.save(rewarding) match {
       case Success(savedRewarding) => successStatus(savedRewarding, Map.empty, "")
       case Failure(exception) => InternalServerError(exception.getMessage)
+    }
+  }
+
+  private def retrieveCategory(rewardingActionInput: RewardingActionInput, rewardingAction: Option[RewardingAction] = None):Either[ActionResult, RewardingActionCategory] = rewardingActionInput match {
+    case NewRewardingActionInput(_, category, _, _) => retrieveCategoryFromInput(category)
+    case UpdateRewardingActionInput(_, optionalCategory, _, _) => optionalCategory match {
+      case None => Right(rewardingAction.map(_.category).get) // Should never be None at this level
+      case Some(category) => retrieveCategoryFromInput(category)
+    }
+  }
+
+  private def retrieveCategoryFromInput(category: InnerRewardingActionCategoryInput): Either[ActionResult, RewardingActionCategory] = {
+    RewardingActionCategoryRepository.retrieve(category.id) match {
+      case Some(retrievedCategory) => Right(retrievedCategory)
+      case None => category.create match {
+        case Left(message) => Left(BadRequest(s"unable to create category due to : $message"))
+        case Right(createdCategory) => RewardingActionCategoryRepository.save(createdCategory) match {
+          case Success(savedCategory) => Right(savedCategory)
+          case Failure(e) => Left(InternalServerError(e.getMessage))
+        }
+      }
     }
   }
 }
