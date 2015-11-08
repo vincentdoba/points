@@ -23,8 +23,9 @@ object RewardingActionService {
     retrieveCategory(input).right.flatMap[ApplicationError, RewardingAction](x => save(input.generate(x)))
   }
 
-  def updateRewardingAction(actionId: UUID)(input: UpdateRewardingActionInput): Either[ApplicationError, RewardingAction] = {
-    Left(ApplicationError(NotCoded, "Not Implemented"))
+  def updateRewardingAction(actionId: UUID)(input: UpdateRewardingActionInput): Either[ApplicationError, RewardingAction] = rewardingActionRepository.retrieve(actionId) match {
+    case None => Left(ApplicationError(RecordNotFound, s"No rewarding action with id $actionId found"))
+    case Some(rewardingAction) => save(input.update(rewardingAction))
   }
 
   def retrieveRewardingAction(actionId:UUID): Either[ApplicationError, RewardingAction] = rewardingActionRepository.retrieve(actionId) match {

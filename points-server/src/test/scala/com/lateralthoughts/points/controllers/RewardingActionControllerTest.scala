@@ -105,6 +105,25 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
 
   }
 
+  it should "return bad request when body is empty" in {
+    val actionId = "C56A4180-65AA-42EC-A945-5FD21DEC0538"
+
+    put(s"/actions/$actionId") {
+      status should equal(400)
+      body should equal( """{"code":"JsonNotValid","message":"The request body is not a valid JSON object"}""")
+    }
+  }
+
+  it should "return not found when rewarding action to be updated is not found" in {
+    val nonExistentActionId = "00000000-0000-0000-0000-000000000000"
+    val json = "{}"
+
+    put(s"/actions/$nonExistentActionId", json.toCharArray.map(_.toByte)) {
+      status should equal(404)
+      body should equal( s"""{"code":"RecordNotFound","message":"No rewarding action with id $nonExistentActionId found"}""")
+    }
+  }
+
   "Calling delete /actions/:actionId" should "return bad request when trying to delete an action with a not valid action id" in {
     val notValidId = "notValidId"
 
