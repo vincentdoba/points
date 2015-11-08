@@ -52,7 +52,7 @@ trait RewardingActionController extends HandlingJson {
   private def retrieveCategory(rewardingActionInput: RewardingActionInput, rewardingAction: Option[RewardingAction] = None): Either[ActionResult, RewardingActionCategory] = rewardingActionInput match {
     case NewRewardingActionInput(_, category, _, _) => retrieveCategoryFromInput(category)
     case UpdateRewardingActionInput(_, optionalCategory, _, _) => optionalCategory match {
-      case None => Right(rewardingAction.map(_.category).get) // Should never be None at this level
+      case None => Right(rewardingAction.map(_.category).get) // rewardingAction.category should never be None at this level
       case Some(category) => retrieveCategoryFromInput(category)
     }
   }
