@@ -19,7 +19,7 @@ object RewardingActionService {
     case Failure(exception) => Left(ApplicationError(DatabaseError, "Unable to retrieve list of rewarding actions"))
   }
 
-  def saveRewardingAction(input: NewRewardingActionInput): Either[ApplicationError, RewardingAction] = {
+  def createRewardingAction(input: NewRewardingActionInput): Either[ApplicationError, RewardingAction] = {
     retrieveCategory(input).right.flatMap[ApplicationError, RewardingAction](x => save(input.generate(x)))
   }
 
