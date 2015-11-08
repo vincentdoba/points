@@ -114,4 +114,12 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
     }
   }
 
+  it should "return no content when trying to delete an action that doesn't exist" in {
+    val nonExistentActionId = "00000000-0000-0000-0000-000000000000"
+
+    delete(s"/actions/$nonExistentActionId") {
+      status should equal(204)
+    }
+  }
+
 }

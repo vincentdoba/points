@@ -15,6 +15,6 @@ trait Repository[T] {
   }
 
   def delete(id: UUID): Try[String] = Try {
-    "ok"
+    "Successfully deleted"
   }
 }

@@ -27,6 +27,11 @@ object RewardingActionService {
     case Some(rewardingAction) => Right(rewardingAction)
   }
 
+  def deleteRewardingAction(actionId:UUID): Either[ApplicationError, String] = rewardingActionRepository.delete(actionId) match {
+    case Success(message) => Right(message)
+    case Failure(exception) => Left(ApplicationError(DatabaseError, exception.getMessage))
+  }
+
   private def save(rewarding: RewardingAction): Either[ApplicationError, RewardingAction] = {
     rewardingActionCategoryRepository.save(rewarding.category) match {
       case Success(_) => rewardingActionRepository.save(rewarding) match {
