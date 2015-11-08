@@ -26,10 +26,14 @@ object RewardingActionService {
   }
 
   private def save(rewarding: RewardingAction): Either[ApplicationError, RewardingAction] = {
-    rewardingActionRepository.save(rewarding) match {
-      case Success(savedRewarding) => Right(savedRewarding)
-      case Failure(exception) => Left(ApplicationError(DatabaseError, exception.getMessage))
+    rewardingActionCategoryRepository.save(rewarding.category) match {
+      case Success(_) => rewardingActionRepository.save(rewarding) match {
+        case Success(savedRewarding) => Right(savedRewarding)
+        case Failure(exception) => Left(ApplicationError(DatabaseError, exception.getMessage))
+      }
+      case Failure(exception) => Left(ApplicationError(DatabaseError, "Unable to save rewarding action category due to : " + exception.getMessage))
     }
+
   }
 
   private def retrieveCategory(rewardingActionInput: RewardingActionInput, rewardingAction: Option[RewardingAction] = None): Either[ApplicationError, RewardingActionCategory] = rewardingActionInput match {
