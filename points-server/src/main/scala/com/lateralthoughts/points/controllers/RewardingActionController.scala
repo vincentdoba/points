@@ -1,14 +1,12 @@
 package com.lateralthoughts.points.controllers
 
-import java.time.OffsetDateTime
 import java.util.UUID
 import javax.servlet.http.HttpServletRequest
 
 import com.lateralthoughts.points.controllers.handlers.{HandlingJson, HandlingUUID}
 import com.lateralthoughts.points.model.inputs.{NewRewardingActionInput, UpdateRewardingActionInput}
-import com.lateralthoughts.points.model.records.{RewardingAction, RewardingActionCategory}
 import com.lateralthoughts.points.services.RewardingActionService
-import org.scalatra.{Ok, ActionResult}
+import org.scalatra.ActionResult
 
 trait RewardingActionController extends HandlingJson with HandlingUUID with Controller {
 
@@ -18,9 +16,7 @@ trait RewardingActionController extends HandlingJson with HandlingUUID with Cont
   val rewardingActionService = RewardingActionService
 
   get(s"/$actionEndpoint/") {
-    val now = OffsetDateTime.now()
-    val rewardingActionCategory = RewardingActionCategory(UUID.randomUUID(), "myCategory", "my category description", now, now)
-    List(RewardingAction(UUID.randomUUID(), "myAction", rewardingActionCategory, "my action description", 1, now, now))
+    retrieveAllRewardingActions()
   }
 
   get(s"/$actionEndpoint/:$actionId") {
@@ -38,6 +34,8 @@ trait RewardingActionController extends HandlingJson with HandlingUUID with Cont
   delete(s"/$actionEndpoint/:$actionId") {
     retrieveActionIdFromURLAnd(deleteRewardingAction)
   }
+
+  private def retrieveAllRewardingActions() = ok(rewardingActionService.retrieveAllRewardingActions())
 
   private def retrieveRewardingAction(input: UUID) = ok(rewardingActionService.retrieveRewardingAction(input))
 
