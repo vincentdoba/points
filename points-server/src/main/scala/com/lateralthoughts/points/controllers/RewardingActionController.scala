@@ -59,13 +59,10 @@ trait RewardingActionController extends HandlingJson {
 
   private def retrieveCategoryFromInput(category: InnerRewardingActionCategoryInput): Either[ActionResult, RewardingActionCategory] = {
     RewardingActionCategoryRepository.retrieve(category.id) match {
-      case Some(retrievedCategory) => Right(retrievedCategory)
+      case Some(retrievedCategory) => Right(category.update(retrievedCategory))
       case None => category.create match {
         case Left(message) => Left(BadRequest(s"unable to create category due to : $message"))
-        case Right(createdCategory) => RewardingActionCategoryRepository.save(createdCategory) match {
-          case Success(savedCategory) => Right(savedCategory)
-          case Failure(e) => Left(InternalServerError(e.getMessage))
-        }
+        case Right(createdCategory) => Right(createdCategory)
       }
     }
   }
