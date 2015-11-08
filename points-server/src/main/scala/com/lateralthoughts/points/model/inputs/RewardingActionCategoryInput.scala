@@ -3,7 +3,7 @@ package com.lateralthoughts.points.model.inputs
 import java.time.{Clock, OffsetDateTime}
 import java.util.UUID
 
-import com.lateralthoughts.points.model.records.{RewardingAction, RewardingActionCategory}
+import com.lateralthoughts.points.model.records.RewardingActionCategory
 
 sealed trait RewardingActionCategoryInput
 

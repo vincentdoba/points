@@ -58,4 +58,13 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
     }
   }
 
+  test("should return bad request when trying to update an action with a not valid action id") {
+    val fakeId = "myFakeId"
+
+    put(s"/actions/$fakeId") {
+      status should equal (400)
+    }
+
+  }
+
 }

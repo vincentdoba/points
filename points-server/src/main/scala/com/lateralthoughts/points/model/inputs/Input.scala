@@ -2,8 +2,8 @@ package com.lateralthoughts.points.model.inputs
 
 import java.time.{Clock, OffsetDateTime}
 
-import com.lateralthoughts.points.model.{Same, Changed, Update}
 import com.lateralthoughts.points.model.records.Record
+import com.lateralthoughts.points.model.{Changed, Same, Update}
 
 /**
   * An input is the deserialization of the JSON posted to the application. It represents an underlying record

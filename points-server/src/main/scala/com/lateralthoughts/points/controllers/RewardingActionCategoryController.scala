@@ -1,5 +1,5 @@
 package com.lateralthoughts.points.controllers
 
-trait RewardingActionCategoryController extends HandlingJson {
+trait RewardingActionCategoryController extends HandlingJson with HandlingError {
 
 }
