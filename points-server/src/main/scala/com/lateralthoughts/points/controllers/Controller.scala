@@ -2,7 +2,7 @@ package com.lateralthoughts.points.controllers
 
 import com.lateralthoughts.points.controllers.handlers.HandlingError
 import com.lateralthoughts.points.model.ApplicationError
-import org.scalatra.{NoContent, ActionResult, Created, Ok}
+import org.scalatra.{ActionResult, Created, NoContent, Ok}
 
 trait Controller extends HandlingError {
 

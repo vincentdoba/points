@@ -10,31 +10,27 @@ import com.lateralthoughts.points.model.{Changed, Same, Update}
   *
   * @tparam T the type of the record represented by this input
   */
-trait Input[T<:Record]
+trait Input[T <: Record]
 
-trait SaveInput[T<:Record] extends Input[T] {
+trait SaveInput[T <: Record] extends Input[T]
 
-}
+trait UpdateInput[T <: Record] extends Input[T] {
 
-trait UpdateInput[T<:Record] extends Input[T] {
+  private def updated(fields: Seq[Update[Any]]) = fields.map(_.updated).reduce((a, b) => a || b)
 
-  private def updated(fields : Seq[Update[Any]]) = fields.map(_.updated).reduce((a,b) => a || b)
-
-  def updateDate(base:T, fields : Seq[Update[Any]]) = updated(fields) match {
+  def updateDate(base: T, fields: Seq[Update[Any]]) = updated(fields) match {
     case true => OffsetDateTime.now(Clock.systemUTC())
     case false => base.updatedAt
   }
 
-  def pick[A](candidate: Option[A], current: A):Update[A] = candidate match {
+  def pick[A](candidate: Option[A], current: A): Update[A] = candidate match {
     case None => Same(current)
     case Some(`current`) => Same(current)
     case Some(inputCandidate) => Changed(inputCandidate)
   }
-
-  def update(base:T):T
 }
 
-trait InnerInput[T<:Record] extends Input[T] {
+trait InnerInput[T <: Record] extends Input[T] {
   def retrieveFieldNameIfNotSet[A](field: Option[A], fieldName: String): Option[String] = field match {
     case None => Some(fieldName)
     case Some(_) => None

@@ -24,7 +24,7 @@ class UpdateRewardingActionInputTest extends FlatSpec with Matchers {
 
 
     // When
-    val updatedRewardingAction = rewardingActionInput.update(rewardingAction)
+    val updatedRewardingAction = rewardingActionInput.update(rewardingAction, rewardingActionCategory)
 
     // Then
     updatedRewardingAction.id should be (id)
@@ -42,7 +42,7 @@ class UpdateRewardingActionInputTest extends FlatSpec with Matchers {
     val rewardingActionInput = UpdateRewardingActionInput(Some("name"), None, Some("description"), Some(2))
 
     // When
-    val updatedRewardingAction = rewardingActionInput.update(rewardingAction)
+    val updatedRewardingAction = rewardingActionInput.update(rewardingAction, rewardingActionCategory)
 
     // Then
     updatedRewardingAction.id should be (id)
@@ -60,7 +60,7 @@ class UpdateRewardingActionInputTest extends FlatSpec with Matchers {
     val rewardingActionInput = UpdateRewardingActionInput(None, None, None, None)
 
     // When
-    val updatedRewardingAction = rewardingActionInput.update(rewardingAction)
+    val updatedRewardingAction = rewardingActionInput.update(rewardingAction, rewardingActionCategory)
 
     // Then
     updatedRewardingAction.id should be (id)

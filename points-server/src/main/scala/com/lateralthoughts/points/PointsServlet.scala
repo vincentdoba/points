@@ -9,5 +9,4 @@ class PointsServlet extends PointsStack with RewardingActionController {
   }
 
 
-
 }

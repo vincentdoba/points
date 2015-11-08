@@ -4,6 +4,7 @@ import java.time.{Clock, OffsetDateTime}
 import java.util.UUID
 
 import com.lateralthoughts.points.model.records.RewardingActionCategory
+import com.lateralthoughts.points.model.{ApplicationError, InputObjectIncomplete}
 
 sealed trait RewardingActionCategoryInput
 
@@ -35,23 +36,23 @@ case class InnerRewardingActionCategoryInput(id: UUID,
   with InnerInput[RewardingActionCategory]
   with RewardingActionCategoryInput {
 
-  def create:Either[String, RewardingActionCategory] = {
+  def create: Either[ApplicationError, RewardingActionCategory] = {
     val missingFields = Seq(retrieveFieldNameIfNotSet(name, "name"), retrieveFieldNameIfNotSet(name, "description")).flatten
 
     if (missingFields.isEmpty) {
       Right(RewardingActionCategory(id, name.get, description.get, OffsetDateTime.now(Clock.systemUTC()), OffsetDateTime.now(Clock.systemUTC())))
     } else {
-      Left(generateMissingFieldsErrorMessage(missingFields))
+      Left(ApplicationError(InputObjectIncomplete, generateMissingFieldsErrorMessage(missingFields)))
     }
   }
 
 }
 
 trait UpdatableRewardingActionCategoryInput extends UpdateInput[RewardingActionCategory] {
-  val name:Option[String]
-  val description:Option[String]
+  val name: Option[String]
+  val description: Option[String]
 
-  override def update(base: RewardingActionCategory) = {
+  def update(base: RewardingActionCategory) = {
     val id = base.id
     val name = pick(this.name, base.name)
     val description = pick(this.description, base.description)

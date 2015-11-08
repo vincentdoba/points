@@ -8,7 +8,7 @@ trait Repository[T] {
 
   def retrieve(id: UUID): Option[T] = None
 
-  def retrieve():Try[List[T]] = Try {
+  def retrieve(): Try[List[T]] = Try {
     List()
   }
 

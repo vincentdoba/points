@@ -12,7 +12,7 @@ case class NewRewardingActionInput(name: String,
                                    description: String,
                                    points: Int) extends SaveInput[RewardingAction] with RewardingActionInput {
 
-  def generate(rewardingActionCategory: RewardingActionCategory): RewardingAction = {
+  def generate(category: RewardingActionCategory): RewardingAction = {
 
     val id = UUID.randomUUID()
     val name = this.name
@@ -20,7 +20,7 @@ case class NewRewardingActionInput(name: String,
     val points = this.points
     val createdAt = OffsetDateTime.now(Clock.systemUTC())
     val updatedAt = OffsetDateTime.now(Clock.systemUTC())
-    RewardingAction(id, name, rewardingActionCategory, description, points, createdAt, updatedAt)
+    RewardingAction(id, name, category, description, points, createdAt, updatedAt)
 
   }
 }
@@ -30,10 +30,9 @@ case class UpdateRewardingActionInput(name: Option[String],
                                       description: Option[String],
                                       points: Option[Int]) extends UpdateInput[RewardingAction] with RewardingActionInput {
 
-  override def update(rewardingAction: RewardingAction) = {
+  def update(rewardingAction: RewardingAction, category: RewardingActionCategory) = {
     val id = rewardingAction.id
     val name = pick(this.name, rewardingAction.name)
-    val category = rewardingAction.category
     val description = pick(this.description, rewardingAction.description)
     val points = pick(this.points, rewardingAction.points)
     val createdAt = rewardingAction.createdAt
