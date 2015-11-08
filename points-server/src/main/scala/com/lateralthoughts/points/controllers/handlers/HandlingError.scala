@@ -1,7 +1,7 @@
-package com.lateralthoughts.points.controllers
+package com.lateralthoughts.points.controllers.handlers
 
 import com.lateralthoughts.points.model._
-import org.scalatra.{NotFound, BadRequest, InternalServerError, NotImplemented}
+import org.scalatra.{BadRequest, InternalServerError, NotFound, NotImplemented}
 
 /**
   * Converter from Application Error to HTML Error

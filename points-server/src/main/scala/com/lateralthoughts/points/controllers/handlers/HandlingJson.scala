@@ -1,4 +1,4 @@
-package com.lateralthoughts.points.controllers
+package com.lateralthoughts.points.controllers.handlers
 
 import com.lateralthoughts.points.model.{ApplicationError, InputObjectNotValid, JsonFormatter, JsonNotValid}
 import org.json4s.jackson.JsonMethods

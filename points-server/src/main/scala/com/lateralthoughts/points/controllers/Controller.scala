@@ -1,5 +1,6 @@
 package com.lateralthoughts.points.controllers
 
+import com.lateralthoughts.points.controllers.handlers.HandlingError
 import com.lateralthoughts.points.model.ApplicationError
 import org.scalatra.{ActionResult, Created, Ok}
 

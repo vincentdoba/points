@@ -2,15 +2,20 @@ package com.lateralthoughts.points.controllers
 
 import java.time.OffsetDateTime
 import java.util.UUID
+import javax.servlet.http.HttpServletRequest
 
+import com.lateralthoughts.points.controllers.handlers.{HandlingUUID, HandlingJson}
 import com.lateralthoughts.points.model.inputs.{NewRewardingActionInput, UpdateRewardingActionInput}
 import com.lateralthoughts.points.model.records.{RewardingAction, RewardingActionCategory}
 import com.lateralthoughts.points.model.{ApplicationError, UUIDNotValid}
 import com.lateralthoughts.points.services.RewardingActionService
+import org.scalatra.ActionResult
 
 import scala.util.{Failure, Success, Try}
 
-trait RewardingActionController extends HandlingJson with Controller {
+trait RewardingActionController extends HandlingJson with HandlingUUID with Controller {
+
+  val actionId = "actionId"
 
   val rewardingActionService = RewardingActionService
 
@@ -20,31 +25,27 @@ trait RewardingActionController extends HandlingJson with Controller {
     List(RewardingAction(UUID.randomUUID(), "myAction", rewardingActionCategory, "my action description", 1, now, now))
   }
 
-  get("/actions/:actionId") {
-    Try {
-      UUID.fromString(params("actionId"))
-    } match {
-      case Success(actionId) => ok(rewardingActionService.retrieveRewardingAction(actionId))
-      case Failure(e) => buildErrorResponse(ApplicationError(UUIDNotValid, e.getMessage))
-    }
+  get(s"/actions/:$actionId") {
+    retrieveActionIdFromURLAnd(retrieveRewardingAction)
   }
 
   post("/actions/") {
     retrievePostedJsonAnd(createNewRewardingAction, "rewardingAction")(request)
   }
 
-  put("/actions/:actionId") {
-    Try {
-      UUID.fromString(params("actionId"))
-    } match {
-      case Success(actionId) => retrievePostedJsonAnd(updateRewardingAction(actionId), "rewardingAction")(request)
-      case Failure(e) => buildErrorResponse(ApplicationError(UUIDNotValid, e.getMessage))
-    }
+  put(s"/actions/:$actionId") {
+    retrieveActionIdFromURLAnd(updateRewardingAction)
   }
+
+  private def retrieveRewardingAction(input:UUID) = ok(rewardingActionService.retrieveRewardingAction(input))
 
   private def createNewRewardingAction(input:NewRewardingActionInput) = created(rewardingActionService.saveRewardingAction(input))
 
-  private def updateRewardingAction(actionId:UUID)(input:UpdateRewardingActionInput) = ok(rewardingActionService.updateRewardingAction(actionId)(input))
+  private def updateRewardingAction(input:UUID) = retrievePostedJsonAnd(updateRewardingActionWithJson(input), "rewardingAction")(request)
+
+  private def retrieveActionIdFromURLAnd(f: UUID => ActionResult)(implicit request: HttpServletRequest) = retrieveUUIDFromURLAnd(params(actionId))(f)
+
+  private def updateRewardingActionWithJson(actionId:UUID)(input:UpdateRewardingActionInput) = ok(rewardingActionService.updateRewardingAction(actionId)(input))
 
 
 }
