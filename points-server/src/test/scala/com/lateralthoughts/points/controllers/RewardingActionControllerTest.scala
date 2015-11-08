@@ -83,6 +83,7 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
 
     put(s"/actions/$fakeId") {
       status should equal (400)
+      body should equal ("Invalid UUID string: myFakeId")
     }
 
   }
