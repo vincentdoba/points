@@ -105,4 +105,13 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
 
   }
 
+  "Calling delete /actions/:actionId" should "return bad request when trying to delete an action with a not valid action id" in {
+    val notValidId = "notValidId"
+
+    delete(s"/actions/$notValidId") {
+      status should equal(400)
+      body should equal( s"""{"code":"UUIDNotValid","message":"Invalid UUID string: $notValidId"}""")
+    }
+  }
+
 }
