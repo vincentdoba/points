@@ -14,14 +14,11 @@ object RewardingActionService {
   val rewardingActionRepository = RewardingActionRepository
   val rewardingActionCategoryRepository = RewardingActionCategoryRepository
 
-  def saveRewardingAction(input: NewRewardingActionInput):Either[ApplicationError, RewardingAction] = {
-    retrieveCategory(input) match {
-      case Left(x) => Left(x)
-      case Right(rewardingActionCategory) => save(input.generate(rewardingActionCategory))
-    }
+  def saveRewardingAction(input: NewRewardingActionInput): Either[ApplicationError, RewardingAction] = {
+    retrieveCategory(input).right.flatMap[ApplicationError, RewardingAction](x => save(input.generate(x)))
   }
 
-  def updateRewardingAction(actionId: UUID)(input: UpdateRewardingActionInput):Either[ApplicationError, RewardingAction] = {
+  def updateRewardingAction(actionId: UUID)(input: UpdateRewardingActionInput): Either[ApplicationError, RewardingAction] = {
     Left(ApplicationError(NotCoded, "Not Implemented"))
   }
 
@@ -48,7 +45,7 @@ object RewardingActionService {
     rewardingActionCategoryRepository.retrieve(category.id) match {
       case Some(retrievedCategory) => Right(category.update(retrievedCategory))
       case None => category.create match {
-        case Left(message) => Left(ApplicationError(InputObjectIncomplete, s"unable to create category due to : $message"))
+        case Left(message) => Left(ApplicationError(InputObjectIncomplete, s"Unable to create category due to : $message"))
         case Right(createdCategory) => Right(createdCategory)
       }
     }

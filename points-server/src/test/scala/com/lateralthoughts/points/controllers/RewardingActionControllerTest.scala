@@ -58,6 +58,26 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
     }
   }
 
+  test("should return bad request when body does not contain a valid category") {
+    val categoryId = UUID.randomUUID()
+    val json =
+      s"""
+        {
+          "name":"myAction",
+          "category": {
+            "id":"$categoryId"
+          },
+          "description":"Description of my action",
+          "points":1
+        }
+      """.stripMargin
+
+    post("/actions/", json.toCharArray.map(_.toByte)) {
+      status should equal (400)
+      body should equal ("Unable to create category due to : The following fields weren't correctly filled in the request : name, description")
+    }
+  }
+
   test("should return bad request when trying to update an action with a not valid action id") {
     val fakeId = "myFakeId"
 
