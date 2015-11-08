@@ -4,7 +4,7 @@ import java.util.UUID
 
 import com.lateralthoughts.points.model.inputs.{InnerRewardingActionCategoryInput, NewRewardingActionInput, RewardingActionInput, UpdateRewardingActionInput}
 import com.lateralthoughts.points.model.records.{RewardingAction, RewardingActionCategory}
-import com.lateralthoughts.points.model.{ApplicationError, DatabaseError, InputObjectIncomplete, NotCoded}
+import com.lateralthoughts.points.model._
 import com.lateralthoughts.points.repositories.{RewardingActionCategoryRepository, RewardingActionRepository}
 
 import scala.util.{Failure, Success}
@@ -20,6 +20,11 @@ object RewardingActionService {
 
   def updateRewardingAction(actionId: UUID)(input: UpdateRewardingActionInput): Either[ApplicationError, RewardingAction] = {
     Left(ApplicationError(NotCoded, "Not Implemented"))
+  }
+
+  def retrieveRewardingAction(actionId:UUID): Either[ApplicationError, RewardingAction] = rewardingActionRepository.retrieve(actionId) match {
+    case None => Left(ApplicationError(RecordNotFound, s"No rewarding action with id $actionId found"))
+    case Some(rewardingAction) => Right(rewardingAction)
   }
 
   private def save(rewarding: RewardingAction): Either[ApplicationError, RewardingAction] = {

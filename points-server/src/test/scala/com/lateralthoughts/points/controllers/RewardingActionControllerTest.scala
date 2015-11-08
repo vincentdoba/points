@@ -20,6 +20,24 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
     }
   }
 
+  "Calling get /actions/:actionId" should "return bad request when action id is not valid" in {
+    val notValidId = "notValidId"
+
+    get(s"/actions/$notValidId") {
+      status should equal(400)
+      body should equal( s"""{"code":"UUIDNotValid","message":"Invalid UUID string: $notValidId"}""")
+    }
+  }
+
+  it should "return not found when action is not found" in {
+    val nonExistentActionId = "00000000-0000-0000-0000-000000000000"
+
+    get(s"/actions/$nonExistentActionId") {
+      status should equal(404)
+      body should equal( s"""{"code":"RecordNotFound","message":"No rewarding action with id $nonExistentActionId found"}""")
+    }
+  }
+
   "Calling post /actions/" should "return bad request when body is empty" in {
     post("/actions/") {
       status should equal(400)
@@ -78,11 +96,11 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
   }
 
   "Calling put /actions/:actionId" should "return bad request when trying to update an action with a not valid action id" in {
-    val fakeId = "myFakeId"
+    val notValidId = "notValidId"
 
-    put(s"/actions/$fakeId") {
+    put(s"/actions/$notValidId") {
       status should equal(400)
-      body should equal( """{"code":"UUIDNotValid","message":"Invalid UUID string: myFakeId"}""")
+      body should equal( s"""{"code":"UUIDNotValid","message":"Invalid UUID string: $notValidId"}""")
     }
 
   }

@@ -1,7 +1,7 @@
 package com.lateralthoughts.points.controllers
 
 import com.lateralthoughts.points.model._
-import org.scalatra.{BadRequest, InternalServerError, NotImplemented}
+import org.scalatra.{NotFound, BadRequest, InternalServerError, NotImplemented}
 
 /**
   * Converter from Application Error to HTML Error
@@ -13,6 +13,7 @@ trait HandlingError {
     case UUIDNotValid => BadRequest(error)
     case InputObjectNotValid => BadRequest(error)
     case InputObjectIncomplete => BadRequest(error)
+    case RecordNotFound => NotFound(error)
     case DatabaseError => InternalServerError(error)
     case NotCoded => NotImplemented(error)
     case _ => InternalServerError(error)

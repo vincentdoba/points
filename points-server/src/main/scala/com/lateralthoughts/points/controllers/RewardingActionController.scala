@@ -20,6 +20,15 @@ trait RewardingActionController extends HandlingJson with Controller {
     List(RewardingAction(UUID.randomUUID(), "myAction", rewardingActionCategory, "my action description", 1, now, now))
   }
 
+  get("/actions/:actionId") {
+    Try {
+      UUID.fromString(params("actionId"))
+    } match {
+      case Success(actionId) => ok(rewardingActionService.retrieveRewardingAction(actionId))
+      case Failure(e) => buildErrorResponse(ApplicationError(UUIDNotValid, e.getMessage))
+    }
+  }
+
   post("/actions/") {
     retrievePostedJsonAnd(createNewRewardingAction, "rewardingAction")(request)
   }
