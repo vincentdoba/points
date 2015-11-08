@@ -9,7 +9,7 @@ import scala.util.{Failure, Success, Try}
 
 trait HandlingUUID extends HandlingError {
 
-  def retrieveUUIDFromURLAnd(retrievedId:String)(f: UUID => ActionResult) = Try {
+  def retrieveUUIDFromURL(retrievedId:String)(f: UUID => ActionResult) = Try {
     UUID.fromString(retrievedId)
   } match {
     case Success(id) => f(id)

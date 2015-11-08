@@ -45,7 +45,7 @@ trait RewardingActionController extends HandlingJson with HandlingUUID with Cont
 
   private def updateRewardingAction(input: UUID) = retrievePostedJsonAnd(updateRewardingActionWithJson(input), "rewardingAction")(request)
 
-  private def retrieveActionIdFromURLAnd(f: UUID => ActionResult)(implicit request: HttpServletRequest) = retrieveUUIDFromURLAnd(params(actionId))(f)
+  private def retrieveActionIdFromURLAnd(f: UUID => ActionResult)(implicit request: HttpServletRequest) = retrieveUUIDFromURL(params(actionId))(f)
 
   private def updateRewardingActionWithJson(actionId: UUID)(input: UpdateRewardingActionInput) = ok(rewardingActionService.updateRewardingAction(actionId)(input))
 
