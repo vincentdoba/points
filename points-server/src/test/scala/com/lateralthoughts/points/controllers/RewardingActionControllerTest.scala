@@ -6,14 +6,13 @@ import com.lateralthoughts.points.PointsServlet
 import com.lateralthoughts.points.model.JsonFormatter
 import com.lateralthoughts.points.model.records.RewardingAction
 import org.json4s.jackson.JsonMethods
-import org.scalatest.FunSuiteLike
 import org.scalatra.test.scalatest._
 
-class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with JsonFormatter {
+class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec with JsonFormatter {
 
   addServlet(classOf[PointsServlet], "/*")
 
-  test("should retrieve list of available rewarding actions") {
+  "Calling get /actions/" should "retrieve list of available rewarding actions" in {
     get("/actions/") {
       status should equal(200)
       val listOfRewardingActions = JsonMethods.parse(body).extract[List[RewardingAction]]
@@ -21,23 +20,23 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
     }
   }
 
-  test("should return bad request when body is empty") {
+  "Calling post /actions/" should "return bad request when body is empty" in {
     post("/actions/") {
-      status should equal (400)
-      body should equal ("""{"code":"JsonNotValid","message":"The request body is not a valid JSON object"}""")
+      status should equal(400)
+      body should equal( """{"code":"JsonNotValid","message":"The request body is not a valid JSON object"}""")
     }
   }
 
-  test("should return bad request when body is not a rewarding action input") {
+  it should "return bad request when body is not a rewarding action input" in {
     val json = "{}"
 
     post("/actions/", json.toCharArray.map(_.toByte)) {
-      status should equal (400)
-      body should equal ("""{"code":"InputObjectNotValid","message":"The request body is not a JSON object representing rewardingAction"}""")
+      status should equal(400)
+      body should equal( """{"code":"InputObjectNotValid","message":"The request body is not a JSON object representing rewardingAction"}""")
     }
   }
 
-  test("should return created when a rewarding action is created") {
+  it should "return created when a rewarding action is created" in {
     val categoryId = UUID.randomUUID()
     val json =
       s"""
@@ -54,11 +53,11 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
       """.stripMargin
 
     post("/actions/", json.toCharArray.map(_.toByte)) {
-      status should equal (201)
+      status should equal(201)
     }
   }
 
-  test("should return bad request when body does not contain a valid category") {
+  it should "return bad request when body does not contain a valid category" in {
     val categoryId = UUID.randomUUID()
     val json =
       s"""
@@ -73,17 +72,17 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
       """.stripMargin
 
     post("/actions/", json.toCharArray.map(_.toByte)) {
-      status should equal (400)
-      body should equal ("""{"code":"InputObjectIncomplete","message":"Unable to create category due to : The following fields weren't correctly filled in the request : name, description"}""")
+      status should equal(400)
+      body should equal( """{"code":"InputObjectIncomplete","message":"Unable to create category due to : The following fields weren't correctly filled in the request : name, description"}""")
     }
   }
 
-  test("should return bad request when trying to update an action with a not valid action id") {
+  "Calling put /actions/:actionId" should "return bad request when trying to update an action with a not valid action id" in {
     val fakeId = "myFakeId"
 
     put(s"/actions/$fakeId") {
-      status should equal (400)
-      body should equal ("""{"code":"UUIDNotValid","message":"Invalid UUID string: myFakeId"}""")
+      status should equal(400)
+      body should equal( """{"code":"UUIDNotValid","message":"Invalid UUID string: myFakeId"}""")
     }
 
   }
