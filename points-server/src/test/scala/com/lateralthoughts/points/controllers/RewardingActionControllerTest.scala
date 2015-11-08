@@ -24,7 +24,7 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
   test("should return bad request when body is empty") {
     post("/actions/") {
       status should equal (400)
-      body should equal ("The request body is not a valid JSON object")
+      body should equal ("""{"code":"JsonNotValid","message":"The request body is not a valid JSON object"}""")
     }
   }
 
@@ -33,7 +33,7 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
 
     post("/actions/", json.toCharArray.map(_.toByte)) {
       status should equal (400)
-      body should equal ("The request body is not a JSON object representing rewardingAction")
+      body should equal ("""{"code":"InputObjectNotValid","message":"The request body is not a JSON object representing rewardingAction"}""")
     }
   }
 
@@ -74,7 +74,7 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
 
     post("/actions/", json.toCharArray.map(_.toByte)) {
       status should equal (400)
-      body should equal ("Unable to create category due to : The following fields weren't correctly filled in the request : name, description")
+      body should equal ("""{"code":"InputObjectIncomplete","message":"Unable to create category due to : The following fields weren't correctly filled in the request : name, description"}""")
     }
   }
 
@@ -83,7 +83,7 @@ class RewardingActionControllerTest extends ScalatraSuite with FunSuiteLike with
 
     put(s"/actions/$fakeId") {
       status should equal (400)
-      body should equal ("Invalid UUID string: myFakeId")
+      body should equal ("""{"code":"UUIDNotValid","message":"Invalid UUID string: myFakeId"}""")
     }
 
   }
