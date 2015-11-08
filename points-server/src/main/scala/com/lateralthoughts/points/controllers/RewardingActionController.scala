@@ -37,13 +37,13 @@ trait RewardingActionController extends HandlingJson with HandlingUUID with Cont
 
   private def retrieveAllRewardingActions() = ok(rewardingActionService.retrieveAllRewardingActions())
 
-  private def retrieveRewardingAction(input: UUID) = ok(rewardingActionService.retrieveRewardingAction(input))
+  private def retrieveRewardingAction(actionId: UUID) = ok(rewardingActionService.retrieveRewardingAction(actionId))
 
-  private def createNewRewardingAction(input: NewRewardingActionInput) = created(rewardingActionService.saveRewardingAction(input))
+  private def createNewRewardingAction(actionId: NewRewardingActionInput) = created(rewardingActionService.saveRewardingAction(actionId))
 
-  private def updateRewardingAction(input: UUID) = retrievePostedJsonAnd(updateRewardingActionWithJson(input), "rewardingAction")(request)
+  private def updateRewardingAction(actionId: UUID) = retrievePostedJsonAnd(updateRewardingActionWithJson(actionId), "rewardingAction")(request)
 
-  private def deleteRewardingAction(input: UUID) = noContent(rewardingActionService.deleteRewardingAction(input))
+  private def deleteRewardingAction(actionId: UUID) = noContent(rewardingActionService.deleteRewardingAction(actionId))
 
   private def retrieveActionIdFromURLAnd(f: UUID => ActionResult)(implicit request: HttpServletRequest) = retrieveUUIDFromURL(params(actionId))(f)
 
