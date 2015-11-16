@@ -2,4 +2,6 @@ package com.lateralthoughts.points.repositories
 
 import com.lateralthoughts.points.model.records.RewardingAction
 
-object RewardingActionRepository extends Repository[RewardingAction]
+trait RewardingActionRepository extends Repository[RewardingAction]
+
+object RewardingActionRepository extends RewardingActionRepository

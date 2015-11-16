@@ -2,7 +2,8 @@ package com.lateralthoughts.points.controllers
 
 import java.util.UUID
 
-import com.lateralthoughts.points.PointsServlet
+import com.lateralthoughts.mocked.MockedRepositoryConfig
+import com.lateralthoughts.points.{PointsConfig, PointsServlet}
 import com.lateralthoughts.points.model.JsonFormatter
 import com.lateralthoughts.points.model.records.RewardingAction
 import org.json4s.jackson.JsonMethods
@@ -10,7 +11,7 @@ import org.scalatra.test.scalatest._
 
 class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec with JsonFormatter {
 
-  addServlet(classOf[PointsServlet], "/*")
+  addServlet(new PointsServlet(MockedRepositoryConfig), "/*")
 
   "Calling get /actions/" should "retrieve list of available rewarding actions" in {
     get("/actions/") {
@@ -35,6 +36,16 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
     get(s"/actions/$nonExistentActionId") {
       status should equal(404)
       body should equal( s"""{"code":"RecordNotFound","message":"No rewarding action with id $nonExistentActionId found"}""")
+    }
+  }
+
+  it should "return a rewarding action when action is found" in {
+    val existentActionId = "1210955b-27b1-40c2-9d33-81601fbcfc31"
+
+    get(s"/actions/$existentActionId") {
+      status should equal(200)
+      val rewardingAction = JsonMethods.parse(body).extract[RewardingAction]
+      rewardingAction.id.toString should equal (existentActionId)
     }
   }
 

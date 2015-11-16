@@ -13,7 +13,7 @@ trait RewardingActionController extends HandlingJson with HandlingUUID with Cont
   val actionId = "actionId"
   val actionEndpoint = "actions"
 
-  val rewardingActionService = RewardingActionService
+  val rewardingActionService: RewardingActionService
 
   get(s"/$actionEndpoint/") {
     retrieveAllRewardingActions()
