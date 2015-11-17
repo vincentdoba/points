@@ -135,6 +135,15 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
     }
   }
 
+  it should "return ok when rewarding action is updated" in {
+    val actionId = "1210955b-27b1-40c2-9d33-81601fbcfc31"
+    val json = """{"description":"my new description"}"""
+
+    put(s"/actions/$actionId", json.toCharArray.map(_.toByte)) {
+      status should equal(200)
+    }
+  }
+
   "Calling delete /actions/:actionId" should "return bad request when trying to delete an action with a not valid action id" in {
     val notValidId = "notValidId"
 
@@ -146,6 +155,14 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
 
   it should "return no content when trying to delete an action that doesn't exist" in {
     val nonExistentActionId = "00000000-0000-0000-0000-000000000000"
+
+    delete(s"/actions/$nonExistentActionId") {
+      status should equal(204)
+    }
+  }
+
+  it should "return no content when deleting an action" in {
+    val nonExistentActionId = "a6c31aff-a227-403d-9ace-f90ef993262d"
 
     delete(s"/actions/$nonExistentActionId") {
       status should equal(204)
