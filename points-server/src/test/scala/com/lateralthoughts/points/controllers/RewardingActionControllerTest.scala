@@ -17,6 +17,7 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
     get("/actions/") {
       status should equal(200)
       val listOfRewardingActions = JsonMethods.parse(body).extract[List[RewardingAction]]
+      listOfRewardingActions should have length 3
 
     }
   }
