@@ -4,4 +4,7 @@ import com.lateralthoughts.points.controllers.handlers.{HandlingError, HandlingJ
 
 trait RewardingActionCategoryController extends HandlingJson with HandlingError {
 
+  val actionCategoryId = "categoryId"
+  val actionCategoryEndpoint = "actions/categories/"
+
 }
