@@ -13,18 +13,8 @@ class RewardingActionService(env: {
   val rewardingActionRepository: Repository[RewardingAction]
   val rewardingActionCategoryRepository: Repository[RewardingActionCategory]
 }) extends Service[RewardingAction] {
-  
+
   val repository = env.rewardingActionRepository
-
-  override def retrieveAll(): Either[ApplicationError, List[RewardingAction]] = repository.retrieve() match {
-    case Success(rewardingActions) => Right(rewardingActions)
-    case Failure(exception) => Left(ApplicationError(DatabaseError, "Unable to retrieve list of rewarding actions"))
-  }
-
-  override def retrieve(actionId: UUID): Either[ApplicationError, RewardingAction] = repository.retrieve(actionId) match {
-    case None => Left(ApplicationError(RecordNotFound, s"No rewarding action with id $actionId found"))
-    case Some(rewardingAction) => Right(rewardingAction)
-  }
 
   def create(input: NewRewardingActionInput): Either[ApplicationError, RewardingAction] = {
     retrieveCategory(input).right.flatMap[ApplicationError, RewardingAction](x => save(input.generate(x)))
@@ -33,11 +23,6 @@ class RewardingActionService(env: {
   def update(actionId: UUID)(input: UpdateRewardingActionInput): Either[ApplicationError, RewardingAction] = repository.retrieve(actionId) match {
     case None => Left(ApplicationError(RecordNotFound, s"No rewarding action with id $actionId found"))
     case Some(rewardingAction) => retrieveCategory(input, Some(rewardingAction)).right.flatMap[ApplicationError, RewardingAction](x => save(input.update(rewardingAction, x)))
-  }
-
-  def delete(actionId: UUID): Either[ApplicationError, String] = repository.delete(actionId) match {
-    case Success(message) => Right(message)
-    case Failure(exception) => Left(ApplicationError(DatabaseError, exception.getMessage))
   }
 
   private def retrieveCategory(rewardingActionInput: RewardingActionInput, rewardingAction: Option[RewardingAction] = None): Either[ApplicationError, RewardingActionCategory] = rewardingActionInput match {

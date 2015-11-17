@@ -35,7 +35,7 @@ class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec 
 
     get(s"/actions/$nonExistentActionId") {
       status should equal(404)
-      body should equal( s"""{"code":"RecordNotFound","message":"No rewarding action with id $nonExistentActionId found"}""")
+      body should equal( s"""{"code":"RecordNotFound","message":"No element with id $nonExistentActionId found"}""")
     }
   }
 
