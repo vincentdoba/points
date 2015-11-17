@@ -3,7 +3,7 @@ package com.lateralthoughts.points.controllers
 import java.util.UUID
 
 import com.lateralthoughts.mocked.MockedRepositoryConfig
-import com.lateralthoughts.points.{PointsConfig, PointsServlet}
+import com.lateralthoughts.points.PointsServlet
 import com.lateralthoughts.points.model.JsonFormatter
 import com.lateralthoughts.points.model.records.RewardingAction
 import org.json4s.jackson.JsonMethods

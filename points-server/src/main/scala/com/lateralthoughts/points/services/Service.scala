@@ -2,7 +2,7 @@ package com.lateralthoughts.points.services
 
 import java.util.UUID
 
-import com.lateralthoughts.points.model.{RecordNotFound, DatabaseError, ApplicationError}
+import com.lateralthoughts.points.model.{ApplicationError, DatabaseError, RecordNotFound}
 import com.lateralthoughts.points.repositories.Repository
 
 import scala.util.{Failure, Success}
