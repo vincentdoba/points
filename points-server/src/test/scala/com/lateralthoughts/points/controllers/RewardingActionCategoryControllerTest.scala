@@ -77,4 +77,42 @@ class RewardingActionCategoryControllerTest extends ScalatraSuite with InitServl
     }
   }
 
+  "Calling put /actions/categories/:categoryId" should "return bad request when trying to update a category with a not valid category id" in {
+    val notValidId = "notValidId"
+
+    put(s"/actions/categories/$notValidId") {
+      status should equal(400)
+      body should equal( s"""{"code":"UUIDNotValid","message":"Invalid UUID string: $notValidId"}""")
+    }
+
+  }
+
+  it should "return bad request when body is empty" in {
+    val categoryId = "C56A4180-65AA-42EC-A945-5FD21DEC0538"
+
+    put(s"/actions/categories/$categoryId") {
+      status should equal(400)
+      body should equal( """{"code":"JsonNotValid","message":"The request body is not a valid JSON object"}""")
+    }
+  }
+
+  it should "return not found when rewarding action category to be updated is not found" in {
+    val nonExistentCategoryId = "00000000-0000-0000-0000-000000000000"
+    val json = "{}"
+
+    put(s"/actions/categories/$nonExistentCategoryId", json.toCharArray.map(_.toByte)) {
+      status should equal(404)
+      body should equal( s"""{"code":"RecordNotFound","message":"No rewarding action category with id $nonExistentCategoryId found"}""")
+    }
+  }
+
+  it should "return ok when rewarding action category is updated" in {
+    val categoryId = "e9b2652e-4ecb-43fb-84de-82a841c7225d"
+    val json = """{"description":"my new description"}"""
+
+    put(s"/actions/categories/$categoryId", json.toCharArray.map(_.toByte)) {
+      status should equal(200)
+    }
+  }
+
 }
