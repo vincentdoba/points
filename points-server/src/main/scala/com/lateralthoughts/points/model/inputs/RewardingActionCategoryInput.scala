@@ -24,10 +24,7 @@ case class NewRewardingActionCategoryInput(name: String,
 }
 
 case class UpdateRewardingActionCategoryInput(name: Option[String],
-                                              description: Option[String]) extends UpdateInput[RewardingActionCategory] with UpdatableRewardingActionCategoryInput with RewardingActionCategoryInput {
-
-
-}
+                                              description: Option[String]) extends UpdateInput[RewardingActionCategory] with UpdatableRewardingActionCategoryInput with RewardingActionCategoryInput
 
 case class InnerRewardingActionCategoryInput(id: UUID,
                                              override val name: Option[String],
