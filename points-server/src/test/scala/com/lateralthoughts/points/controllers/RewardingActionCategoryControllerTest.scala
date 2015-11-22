@@ -26,11 +26,11 @@ class RewardingActionCategoryControllerTest extends ScalatraSuite with InitServl
   }
 
   it should "return not found when category is not found" in {
-    val nonExistentActionId = "00000000-0000-0000-0000-000000000000"
+    val nonExistentCategoryId = "00000000-0000-0000-0000-000000000000"
 
-    get(s"/actions/categories/$nonExistentActionId") {
+    get(s"/actions/categories/$nonExistentCategoryId") {
       status should equal(404)
-      body should equal( s"""{"code":"RecordNotFound","message":"No element with id $nonExistentActionId found"}""")
+      body should equal( s"""{"code":"RecordNotFound","message":"No element with id $nonExistentCategoryId found"}""")
     }
   }
 
@@ -40,7 +40,40 @@ class RewardingActionCategoryControllerTest extends ScalatraSuite with InitServl
     get(s"/actions/categories/$existentCategoryId") {
       status should equal(200)
       val rewardingAction = JsonMethods.parse(body).extract[RewardingActionCategory]
-      rewardingAction.id.toString should equal (existentCategoryId)
+      rewardingAction.id.toString should equal(existentCategoryId)
+    }
+  }
+
+  "Calling post /actions/categories" should "return bad request when body is empty" in {
+    post("/actions/categories/") {
+      status should equal(400)
+      body should equal( """{"code":"JsonNotValid","message":"The request body is not a valid JSON object"}""")
+    }
+  }
+
+  it should "return bad request when body is not a rewarding action category input" in {
+    val json = "{}"
+
+    post("/actions/categories/", json.toCharArray.map(_.toByte)) {
+      status should equal(400)
+      body should equal( """{"code":"InputObjectNotValid","message":"The request body is not a JSON object representing rewardingActionCategory"}""")
+    }
+  }
+
+  it should "return created when a rewarding action category is created" in {
+    val json =
+      s"""
+        {
+            "name":"myCategory",
+            "description":"Description of my category"
+        }
+      """.stripMargin
+
+    post("/actions/categories/", json.toCharArray.map(_.toByte)) {
+      status should equal(201)
+      val createdCategory = JsonMethods.parse(body).extract[RewardingActionCategory]
+      createdCategory.name should equal("myCategory")
+      createdCategory.description should equal("Description of my category")
     }
   }
 

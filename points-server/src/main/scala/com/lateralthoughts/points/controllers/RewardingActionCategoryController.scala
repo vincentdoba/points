@@ -4,6 +4,7 @@ import java.util.UUID
 import javax.servlet.http.HttpServletRequest
 
 import com.lateralthoughts.points.controllers.handlers.{HandlingJson, HandlingUUID}
+import com.lateralthoughts.points.model.inputs.NewRewardingActionCategoryInput
 import com.lateralthoughts.points.services.RewardingActionCategoryService
 import org.scalatra.ActionResult
 
@@ -22,10 +23,18 @@ trait RewardingActionCategoryController extends HandlingJson with HandlingUUID w
     retrieveCategoryIdFromURLAnd(retrieveRewardingActionCategory)
   }
 
+  post(s"/$actionCategoryEndpoint/") {
+    createRewardingActionCategory()
+  }
+
   private def retrieveAllRewardingActionCategories() = ok(rewardingActionCategoryService.retrieveAll())
 
   private def retrieveRewardingActionCategory(categoryId: UUID) = ok(rewardingActionCategoryService.retrieve(categoryId))
 
   private def retrieveCategoryIdFromURLAnd(f: UUID => ActionResult)(implicit request: HttpServletRequest) = retrieveUUIDFromURL(params(actionCategoryId))(f)
+
+  private def createRewardingActionCategory() = retrievePostedJsonAnd(createRewardingActionCategoryWithJson, "rewardingActionCategory")(request)
+
+  private def createRewardingActionCategoryWithJson(input: NewRewardingActionCategoryInput) = created(rewardingActionCategoryService.create(input))
 
 }
