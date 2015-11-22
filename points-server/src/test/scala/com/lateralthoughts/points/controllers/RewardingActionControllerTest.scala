@@ -2,16 +2,12 @@ package com.lateralthoughts.points.controllers
 
 import java.util.UUID
 
-import com.lateralthoughts.mocked.MockedRepositoryConfig
-import com.lateralthoughts.points.PointsServlet
 import com.lateralthoughts.points.model.JsonFormatter
 import com.lateralthoughts.points.model.records.RewardingAction
 import org.json4s.jackson.JsonMethods
 import org.scalatra.test.scalatest._
 
-class RewardingActionControllerTest extends ScalatraSuite with ScalatraFlatSpec with JsonFormatter {
-
-  addServlet(new PointsServlet(MockedRepositoryConfig), "/*")
+class RewardingActionControllerTest extends ScalatraSuite with InitServlet with JsonFormatter {
 
   "Calling get /actions/" should "retrieve list of available rewarding actions" in {
     get("/actions/") {
