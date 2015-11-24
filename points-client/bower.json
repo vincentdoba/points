@@ -1,0 +1,9 @@
+{
+  "name": "points-client",
+  "version": "0.0.1",
+  "dependencies": {
+    "jquery": "~2.1.1",
+    "bootstrap": ">=3.3.5",
+    "modernizr": "^2.8.3"
+  }
+}
