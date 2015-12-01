@@ -1,9 +1,6 @@
-import sbt._
-import Keys._
 import org.scalatra.sbt._
-import org.scalatra.sbt.PluginKeys._
-import com.mojolly.scalate.ScalatePlugin._
-import ScalateKeys._
+import sbt.Keys._
+import sbt._
 
 object PointsBuild extends Build {
   val Organization = "com.lateralthoughts.internal"
@@ -15,7 +12,7 @@ object PointsBuild extends Build {
   lazy val project = Project (
     "points-server",
     file("."),
-    settings = ScalatraPlugin.scalatraSettings ++ scalateSettings ++ Seq(
+    settings = ScalatraPlugin.scalatraSettings ++ Seq(
       organization := Organization,
       name := Name,
       version := Version,
@@ -32,19 +29,7 @@ object PointsBuild extends Build {
         "javax.servlet" % "javax.servlet-api" % "3.1.0" % "provided",
         "org.json4s"   %% "json4s-jackson" % "3.3.0",
         "org.json4s" %% "json4s-ext" % "3.3.0"
-      ),
-      scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
-        Seq(
-          TemplateConfig(
-            base / "webapp" / "WEB-INF" / "templates",
-            Seq.empty,  /* default imports should be added here */
-            Seq(
-              Binding("context", "_root_.org.scalatra.scalate.ScalatraRenderContext", importMembers = true, isImplicit = true)
-            ),  /* add extra bindings here */
-            Some("templates")
-          )
-        )
-      }
+      )
     )
   )
 }
