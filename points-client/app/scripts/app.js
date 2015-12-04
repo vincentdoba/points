@@ -2,7 +2,7 @@
 var React = window.React = require('react'),
     ReactDOM = require("react-dom"),
     Timer = require("./ui/Timer"),
-    mountNode = document.getElementById("app");
+    mountNode = document.getElementById("content");
 
 var TodoList = React.createClass({
   render: function() {
@@ -42,4 +42,3 @@ var TodoApp = React.createClass({
 
 
 ReactDOM.render(<TodoApp />, mountNode);
-
