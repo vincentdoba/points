@@ -1,8 +1,8 @@
 
-var React = window.React = require('react'),
-    ReactDOM = require("react-dom"),
-    Timer = require("./ui/Timer"),
-    mountNode = document.getElementById("content");
+var React = window.React = require("react");
+var ReactDOM = require("react-dom");
+var Timer = require("./ui/Timer");
+var mountNode = document.getElementById("content");
 
 var TodoList = React.createClass({
   render: function() {
@@ -14,7 +14,7 @@ var TodoList = React.createClass({
 });
 var TodoApp = React.createClass({
   getInitialState: function() {
-    return {items: [], text: ''};
+    return {items: [], text: ""};
   },
   onChange: function(e) {
     this.setState({text: e.target.value});
@@ -22,7 +22,7 @@ var TodoApp = React.createClass({
   handleSubmit: function(e) {
     e.preventDefault();
     var nextItems = this.state.items.concat([this.state.text]);
-    var nextText = '';
+    var nextText = "";
     this.setState({items: nextItems, text: nextText});
   },
   render: function() {
@@ -32,7 +32,7 @@ var TodoApp = React.createClass({
         <TodoList items={this.state.items} />
         <form onSubmit={this.handleSubmit}>
           <input onChange={this.onChange} value={this.state.text} />
-          <button>{'Add #' + (this.state.items.length + 1)}</button>
+          <button>{"Add #" + (this.state.items.length + 1)}</button>
         </form>
         <Timer />
       </div>
